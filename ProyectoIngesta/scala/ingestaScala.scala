@@ -31,6 +31,6 @@ val inputFile =sc.textFile("hdfs://nn/user/rhmaripa/spicy/input/test2.txt").map(
     inputFile.map(x=>{
   val newCol = x(1) + x(4)
   newCol+: x
-
+ })
 
 
