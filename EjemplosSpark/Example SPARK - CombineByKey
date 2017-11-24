@@ -1,0 +1,21 @@
+You have been given a file named spark8/data.csv (type, name)
+
+Load this file from hdfs and save it back as (id, (all names of same type)) in restults directory. should be able to write in a single file
+
+data.csv
+1,Lokesh
+2,Bhupesh
+2,Amit
+2,Ratan
+2,Dinesh
+1,Pavan
+1,Tejas
+2,Sheela
+1,Kumar
+1,Venkat
+
+val data    	   = sc.textFile("/user/cloudera/spark8/data.csv")
+val dataRDD 	   = data.map(x => (x.split(",")(0), x.split(",")(1)))
+val swapped 	   = dataRDD.map(item => item.swap)
+val combinedOutput = dataRDD.combineByKey(List(_), (x:List[String], y:String) => y :: x, (x:List[String], y:List[String]) => x :::y)
+combinedOutput.repartition(1).saveAsTextFile("/user/cloudera/spark8/result.txt")

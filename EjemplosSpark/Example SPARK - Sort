@@ -1,0 +1,19 @@
+You have been given a file named spark7/EmployeeName.csv 	(id, name)
+
+EmployeeName.csv
+E01,Lokesh
+E02,Bhupesh
+E03,Amit
+E04,Ratan
+E05,Dinesh
+E06,Pavan
+E07,Tejas
+E08,Sheela
+E09,Kumar
+E10,Venkat
+
+Load this file from hdfs and sort it by name and save it back as (id, name) in results directory. However, make sure while saving it should be able to write in a single file.
+val EmployeeNameRDD = sc.textFile("/user/cloudera/spark7/EmployeeName.csv").map(x => (x.split(",")(0), x.split(",")(1)))
+val sortByName  	= EmployeeNameRDD.map(x => x.swap).sortByKey().map(x => x.swap)
+sortByName.repartition(1).saveAsTextFile("/user/cloudera/spark7/result.txt")
+
