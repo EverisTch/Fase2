@@ -1,0 +1,33 @@
+HadoopExam.com has done survey on their Exam products feedback using a web based form. 
+
+name				:	String
+subscription date	:	String
+rating				:	String
+
+spark9/feedback.txt
+Christopher|Jan 11, 2015|5 
+Kapil|11 Jan, 2015|5 
+Thomas|6/17/2014|5 
+John|22-08-2013|5 
+Mithun|2013|5 
+Jitendra||5
+
+write a spark program using regular expression which will filter all the valid dates and save in two separate file (good record and bad record)
+
+val reg1 = """(\d+)\s(\w{3})(,)\s(\d{4})""".r //11 Jan, 2015
+val reg2 = """(\d+)(\/)(\d+)(\/)(\d{4})""".r  //6/17/2014
+val reg3 = """(\d+)(-)(\d+)(-)(\d{4})""".r    //22-08-2013
+val reg4 = """(\w{3})\s(\d+)(,)\s(\d{4})""".r //Jan 11, 2015
+
+val feedbackRDD   = sc.textFile("/user/cloudera/spark9/feedback.txt")
+val feedbackSplit = feedbackRDD.map(x => x.split('|'))
+
+val validRecord = feedbackSplit.filter(x =>  (reg1.pattern.matcher(x(1).trim).matches|reg2.pattern.matcher(x(1).trim).matches|reg3.pattern.matcher(x(1).trim).matches|reg4.pattern.matcher(x(1).trim).matches))
+val badRecords  = feedbackSplit.filter(x => !(reg1.pattern.matcher(x(1).trim).matches|reg2.pattern.matcher(x(1).trim).matches|reg3.pattern.matcher(x(1).trim).matches|reg4.pattern.matcher(x(1).trim).matches))
+
+// convert each array to String
+val valid = validRecord.map(e => (e(0), e(1), e(2)))
+val bad   = badRecords.map( e => (e(0), e(1), e(2)))
+
+valid.repartition(1).saveAsTextFile("/user/cloudera/spark9/good.txt")
+bad.repartition(1).saveAsTextFile("/user/cloudera/spark9/bad.txt")

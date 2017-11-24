@@ -1,0 +1,33 @@
+# you have given the following two files:
+
+# 1 content.txt : contain a huge text file containing space separated words.
+# 2 remove.txt:   ignore/filter all the words given in this file
+
+Content.txt
+Hello this is HadoopExam.com 
+This is QuickTechie.com
+Apache Spark Training
+This is Spark Learning Session
+Spark is faster than MapReduce
+
+Remove.txt
+Hello, is, this, the
+
+# write a spark program which reads the content.txt file and load as an RDD, remove all the words from a broadcast variables. 
+# And count the ocurrence of the each word and save it as a text file in HDFS.
+
+val content = sc.textFile("/user/cloudera/spark2/Content.txt")
+val remove  = sc.textFile("/user/cloudera/spark2/Remove.txt")
+
+val removeRDD = remove.flatMap(x => x.split(",")).map(w => w.trim)
+
+# create broadcast variable
+val bRemove   = sc.broadcast(removeRDD.collect().toList)
+
+val words     = content.flatMap(line => line.split(" "))
+
+val filtered  = words.filter {case (word) => !bRemove.value.contains(word)}
+
+val pairRDD   = filtered.map(w => (w,1))
+val wordCount = pairRDD.reduceByKey(_+_)
+wordCount.saveAsTextFile("/user/cloudera/spark2/result.txt")

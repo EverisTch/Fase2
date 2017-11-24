@@ -1,0 +1,24 @@
+You have been given below python code snippet, with intermediate output.
+
+we want to take a list of records about people and then we want to sum up their ages and count them.
+so for this example the type in the RDD will be a dictionary in the format of {name: NAME, age: AGE, gender: GENDER}
+the result type will be a tuple that looks like so (sum of ages, count)
+
+people = []
+people.append({'name': 'Amit', 'age':45, 'gender':'M'})
+people.append({'name': 'Ganga', 'age':43, 'gender':'F'})
+people.append({'name': 'John', 'age':28, 'gender':'M'})
+people.append({'name': 'Lolita', 'age':33, 'gender':'F'})
+people.append({'name': 'Dont Knwo', 'age':18, 'gender':'T'})
+
+peopleRDD = sc.parallelize(people)
+peopleRDD.aggregate((0,0), seqOp, combOp)
+//Output of above line: 167, 5
+
+seqOp: su the age of all people as well count them, in eah partition
+combOp: combine results from all partitions
+
+Solution
+
+seqOp  = (lambda x,y: (x[0]+y['age'], x[1]+1))
+combOp = (lambda x,y: (x[0]+y[0], x[1]+y[1]))

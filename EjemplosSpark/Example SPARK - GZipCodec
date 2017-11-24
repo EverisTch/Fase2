@@ -1,0 +1,7 @@
+You have been given an RDD as below
+val rdd: RDD[Array[Byte]]
+
+Now you have to save this RDD as SequenceFile. And below is the code snippet
+
+import org.apache.hadoop.io.compress.GzipCodec
+rdd.map(bytesArray => (NullWritable.get(), new BytesWritable(bytesArray))).saveAsSequenceFile("/user/cloudera/output/path", classOf[GzipCodec])

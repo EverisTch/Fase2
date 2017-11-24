@@ -1,0 +1,22 @@
+You have been given sample data as below in a file called spark15/file1.txt
+
+3070811,1963,1096,,"US","CA",,1,
+3022811,1963,1096,,"US","CA",,1,56
+3033811,1963,1096,,"US","CA",,1,23
+
+Below is the code snippet to process this file.
+
+val field  = sc.textFile("/user/cloudera/spark15/file1.txt")
+val mapper = field.map(x => A)
+mapper.map(x => x.map(x => {B})).collect
+
+Please fill in A and B so it can generate below final output
+Array(Array(3070811, 1963, 1096, 0, "US", "CA", 0, 1,  0)
+	 ,Array(3022811, 1963, 1096, 0, "US", "CA", 0, 1, 56)
+	 ,Array(3033811, 1963, 1096, 0, "US", "CA", 0, 1, 23))
+
+solution:
+
+val field  = sc.textFile("/user/cloudera/spark15/file1.txt")
+val mapper = field.map(x => x.split(",", -1))
+mapper.map(x => x.map(x => {if(x.isEmpty) 0 else x})).collect

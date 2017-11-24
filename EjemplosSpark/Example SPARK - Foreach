@@ -1,0 +1,31 @@
+You have been given 2 files
+
+(spark12/technology.txt)
+first,last,technology
+Amit,Jain,java
+Lokesh,kumar,unix
+Mithun,kale,spark
+Rajni,vekat,hadoop
+Rahul,Yadav,scala
+
+(spark12/salary.txt)
+first,last,salary
+Amit,Jain,100000
+Lokesh,kumar,95000
+Mithun,kale,150000
+Rajni,vekat,154000
+Rahul,Yadav,120000
+
+Write a spark program, which will join the data based on first and last name and save the joined results in following format
+first,last,technology,salary
+
+val technology    = sc.textFile("/user/cloudera/spark12/technology.txt")
+val salary        = sc.textFile("/user/cloudera/spark12/salary.txt")
+
+val technologyRDD = technology.map(t => ( (t.split(",")(0), t.split(",")(1)), (t.split(",")(2))))
+val salaryRDD 	  = salary.map(t => ( (t.split(",")(0), t.split(",")(1)), (t.split(",")(2))))
+
+val joined = technologyRDD.join(salaryRDD)
+joined.take(10).foreach(println)
+
+joined.repartition(1).saveAsTextFile("/user/cloudera/spark12/multicolum.txt")

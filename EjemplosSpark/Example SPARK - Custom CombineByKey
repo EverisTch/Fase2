@@ -1,0 +1,17 @@
+you have been given below code snippet (calculating an average score), with intermediate output
+
+type ScoreCollector = (Int, Double)
+type PersonScores   = (String, (Int, Double))
+
+val initialScores = Array(("Fred", 88.0), ("Fred", 95.0), ("Fred",91.0), ("Wilma", 93.0), ("Wilma", 95.0), ("Wilma", 98.0))
+val wilmaAndFredScores = sc.parallelize(initialScores).cache()
+
+createScoreCombiner 
+scoreCombiner
+scoreMerger
+
+val scores = wilmaAndFredScores.combineByKey(createScoreCombiner, scoreCombiner, scoreMerger)
+val averagingFunction = (personScore: PersonScores) => {
+	
+	
+}

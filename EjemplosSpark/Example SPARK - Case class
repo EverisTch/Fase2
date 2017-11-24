@@ -1,0 +1,30 @@
+You have been given a file (spark10/sales.txt), with the content
+
+spark10/sales.txt
+Department,Designation,costToCompany,State
+Sales,Trainee,12000,UP
+Sales,Lead,32000,AP
+Sales,Lead,32000,LA
+Sales,Lead,32000,TN
+Sales,Lead,32000,AP
+Sales,Lead,32000,TN 
+Sales,Lead,32000,LA
+Sales,Lead,32000,LA
+Marketing,Associate,18000,TN
+Marketing,Associate,18000,TN
+HR,Manager,58000,TN
+
+And want to produce the output as a csv with group by Department,Designation,State with additional columns with sum(costToCompany) and TotalEmployeeCount
+
+should get result like
+Dept,Desg,state,empCount,totalCost
+Sales,Lead,AP,2,64000
+Sales,Lead,LA,3,96000
+Sales,Lead,TN,2,64000
+
+val sales    = sc.textFile("/user/cloudera/spark10/sales.txt")
+case class Employee(Dept: String,Desg: String,empCount: Double,state: String)
+val salesRDD = sales.map(_.split(',')).map(e => Employee(e(0), e(1), e(2).toDouble, e(3)))
+val KeyVals  = salesRDD.map(em => ((em.Dept, em.Desg, em.state), (1, em.empCount)))
+val results  = KeyVals.reduceByKey{ (a,b) => (a._1 + b._1, a._2 + b._2)}
+results.repartition(1).saveAsTextFile("/user/cloudera/spark10/group.txt")
