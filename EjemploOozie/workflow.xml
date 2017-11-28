@@ -1,0 +1,53 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="${projectName}-swf">
+
+    <credentials>
+        <credential name="hs2-creds" type="hive2">
+            <property>
+                <name>hive2.server.principal</name>
+                <value>${jdbcPrincipal}</value>
+            </property>
+            <property>
+                <name>hive2.jdbc.url</name>
+                <value>${jdbcURL}</value>
+          </property>
+        </credential>
+    </credentials>
+
+    <start to="shell-node-1"/>
+
+    <action name="shell-node-1">
+        <shell xmlns="uri:oozie:shell-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <exec>${processorFile}</exec>
+            <argument>${streaming_jar_path}</argument>
+            <argument>${outputFilePath}</argument>
+            <argument>${encryptionHash}</argument>
+            <argument>${fieldsToEncrypt}</argument>
+            <file>${processorFilePath}</file>
+        </shell>
+    <ok to="end"/>
+    <error to="fail"/>
+    </action>
+
+<!-- Descomentar esta parte si se requiere ejecutar hive
+         <action name="beeline-node-1" cred="hs2-creds">
+        <hive2 xmlns="uri:oozie:hive2-action:0.1">
+            <jdbc-url>${jdbcURL}</jdbc-url>
+            <script>${beelinePath}</script>
+        </hive2>
+        <ok to="end"/>
+        <error to="fail"/>
+    </action> -->
+
+    <kill name="fail">
+        <message>error on processing</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
