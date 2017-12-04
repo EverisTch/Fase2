@@ -1,0 +1,9 @@
+nomSparkContxt=yarn
+nomApp=mobile_line_digest
+path_hdfs=spark/datos_734M.txt
+path_hdfs_out=spark/datos_734M_output
+esquema=test
+nomtabla=mobile_line
+values=billing_cycle_id,billing_account_id,geo_area_id
+colpartition=time
+servidorHDFS=hdfs://chs-yqz-853-mn002.bi.services.us-south.bluemix.net:8020
