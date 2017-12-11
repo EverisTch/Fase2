@@ -220,14 +220,14 @@ object MobileLine {
     for (line <- Source.fromFile(conf_file).getLines) {
       if (line.indexOf("nomSparkContxt") == 0) values(0) = line.substring(line.indexOf("=")+1)
       if (line.indexOf("nomApp")         == 0) values(1) = line.substring(line.indexOf("=")+1)
-      if (line.indexOf("esquema")        == 0) values(4) = line.substring(line.indexOf("=")+1)
-      if (line.indexOf("nomtabla")       == 0) values(5) = line.substring(line.indexOf("=")+1)
-      if (line.indexOf("values")         == 0) values(6) = line.substring(line.indexOf("=")+1)
-      if (line.indexOf("colpartition")   == 0) values(7) = line.substring(line.indexOf("=")+1)
-      if (line.indexOf("servidorHDFS")   == 0) values(8) = line.substring(line.indexOf("=")+1)
-      if (line.indexOf("schemaHDFS")     == 0) values(8) = line.substring(line.indexOf("=")+1)
+      if (line.indexOf("esquema")        == 0) values(2) = line.substring(line.indexOf("=")+1)
+      if (line.indexOf("nomtabla")       == 0) values(3) = line.substring(line.indexOf("=")+1)
+      if (line.indexOf("values")         == 0) values(4) = line.substring(line.indexOf("=")+1)
+      if (line.indexOf("colpartition")   == 0) values(5) = line.substring(line.indexOf("=")+1)
+      if (line.indexOf("servidorHDFS")   == 0) values(6) = line.substring(line.indexOf("=")+1)
+      if (line.indexOf("schemaHDFS")     == 0) values(7) = line.substring(line.indexOf("=")+1)
       if (line.indexOf("userHDFS")       == 0) values(8) = line.substring(line.indexOf("=")+1)
-      if (line.indexOf("nameFileHDFS")   == 0) values(8) = line.substring(line.indexOf("=")+1)
+      if (line.indexOf("nameFileHDFS")   == 0) values(9) = line.substring(line.indexOf("=")+1)
     }
     values.toList
   }
