@@ -1,0 +1,82 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="${projectName}-wf">
+    <global>
+       <job-tracker>${jobTracker}</job-tracker>
+       <name-node>${nameNode}</name-node>
+       <configuration>
+            <property>
+                <name>mapred.job.queue.name</name>
+                <value>${queueName}</value>
+            </property>
+            <property>
+                <name>hive.execution.engine</name>
+                <value>tez</value>
+            </property>
+            <property>
+                <name>tez.queue.name</name>
+                <value>${queueName}</value>
+            </property>
+            <property>
+                <name>tez.lib.uris</name>
+                <value>/hdp/apps/2.3.4.0-3485/tez/tez.tar.gz</value>
+            </property>
+			<property>
+				<name>oozie.action.max.output.data</name>
+				<value>8192</value>
+			</property>
+        </configuration>
+    </global>
+	
+	<credentials>
+        <credential name="hs2-creds" type="hive2">
+            <property>
+                <name>hive2.server.principal</name>
+                <value>${jdbcPrincipal}</value>
+            </property>
+            <property>
+                <name>hive2.jdbc.url</name>
+                <value>${jdbcURL}</value>
+          </property>
+        </credential>
+    </credentials>
+	
+   <start to="shell-node-1"/>
+   
+   <action name="shell-node-1">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+		    <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <exec>${shellStartName}</exec>
+            <argument>${tableName5}</argument>
+ 	        <argument>${periodo}</argument>
+            <file>/user/srv_ingesta/srv_ingesta.keytab</file>
+            <file>${shellStartPath}</file>
+            <capture-output/>
+        </shell>
+        <ok to="beeline-node-1"/>
+        <error to="fail"/>
+    </action>
+	
+	<action name="beeline-node-1" cred="hs2-creds">
+        <hive2 xmlns="uri:oozie:hive2-action:0.1">
+            <jdbc-url>${jdbcURL}</jdbc-url>
+            <script>${wf:actionData('shell-node-1')['PATH_HQL']}</script>
+            <param>SCHEMA=${wf:actionData('shell-node-1')['SCHEMA']}</param>
+			<param>USER_PATH=${wf:actionData('shell-node-1')['INPUT_SPICY']}</param>
+			<param>fecha=${wf:actionData('shell-node-1')['PARTITION_DATE']}</param>
+        </hive2>
+        <ok to="end"/>
+        <error to="fail"/>
+    </action>
+	
+    <kill name="fail">
+		<message>"Killed job due to error: ${wf:errorMessage(wf:lastErrorNode())}"</message>
+    </kill>
+   <end name="end"/>
+
+</workflow-app>
