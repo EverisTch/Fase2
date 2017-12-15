@@ -144,6 +144,7 @@ echo "beeline -u jdbc:hive2://prd7404.bigdata.tchile.local:2181,prd7432.bigdata.
 path_archivo=`echo /stage/${SCHEMA}/${TABLE}/processing/`
 input_spicy=$path_archivo
 
+
 (beeline -u "jdbc:hive2://prd7404.bigdata.tchile.local:2181,prd7432.bigdata.tchile.local:2181,prd7460.bigdata.tchile.local:2181/;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2" \
            -f ${PATH_EXE}${TABLE}/${TABLE}.hql --hivevar SCHEMA=${SCHEMA} --hivevar USER_PATH=${path_archivo} --hivevar fecha=${partition_date}) >> ${VRS_FILE_LOG}
 
